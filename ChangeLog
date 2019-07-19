@@ -1,0 +1,7 @@
+CHANGES
+=======
+
+* 🐍 adds warmane\_point\_collector package
+* 🐳 adds Dockerfile
+* 🚲 adds setup.py wheel support
+* initial
