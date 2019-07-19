@@ -5,8 +5,8 @@ from asyncio import sleep
 
 import requests
 
-from config import config
-from logger import logger
+from warmane_point_collector.config import config
+from warmane_point_collector.logger import logger
 
 
 class Captcha(object):

@@ -3,7 +3,7 @@ import configparser
 
 # Reads and stores the config.ini file
 class Config(object):
-    CONFIG_FILE = "./config.ini"
+    CONFIG_FILE = "config.ini"
 
     def __init__(self):
         self.config_file = configparser.ConfigParser()
