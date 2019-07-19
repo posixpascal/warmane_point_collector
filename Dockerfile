@@ -22,4 +22,4 @@ RUN set -xe \
  && mkdir -p /app \
  && useradd warmane --no-create-home --user-group
 USER warmane
-CMD ["cd /app && ls"]
+CMD ["pipenv run python3 warmane.py"]

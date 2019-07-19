@@ -1,6 +1,7 @@
 CHANGES
 =======
 
+* 🤓 adds readme, changelog and author files
 * 🐍 adds warmane\_point\_collector package
 * 🐳 adds Dockerfile
 * 🚲 adds setup.py wheel support

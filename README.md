@@ -1,12 +1,13 @@
-# warmane_point_collector
+# 🦡 warmane_point_collector
 
-A python3 bot which collects daily login points from [warmane.com](https://www.warmane.com). 
+A python3 bot which collects daily login points from [warmane.com](https://www.warmane.com). It supports multiple
+accounts, can run chrome in headless mode and solve recaptchas automatically in the background.
 
-## Install
+## 💻 Install
 
 Install using docker or [Pipenv](https://docs.pipenv.org/en/latest/)
 
-### Via pipenv
+### 🐍 Via pipenv
 
 ```bash
 # Clone the repository & cd into it
@@ -15,7 +16,7 @@ pipenv install
 
 You can also install this bot as a library using  `pipenv install warmane_point_collector`. 
 
-## Via docker
+## 🐳 Via docker
 
 Build the image once.
 
@@ -31,7 +32,7 @@ then run it using:
 docker run -t warmane_point_collector
 ```
 
-## Usage
+## 🚀 Usage
 
 ```bash
 pipenv run python3 warmane.py
@@ -40,11 +41,11 @@ pipenv shell
 python3 warmane.py
 ```
 
-## Config
+## 🔩 Config
 
 Rename the provided `config.ini.sample` to `config.ini` and edit it in place.
 
-```cfg
+```toml
 [bot]
 # Whether or not to solve captchas using 2captcha.com — Account required
 use_2captcha = 0
@@ -104,11 +105,23 @@ password = YOUR_PASSWORD
 #username = ""
 #password = ""
 ```
-## Recaptcha Bypass
+
+## 👀 Recaptcha Bypass
 
 To bypass the recaptcha you have to add a [2captcha.com](https://2captcha.com) API key in the config file.
 
-## License
+## 🤓 Solve Recaptcha manually
+
+If you do not want to use 2captcha.com you can also manually solve the captchas.
+The bot will automatically fill in all credentials and will wait for you to solve the captcha.
+Once you solve the captcha the bot will continue and collect your points.
+
+Do note that manual captcha solving is only possible then running the bot in non-headless mode.
+Set `headless = 0` in your `config.ini` file.
+
+
+
+## 📋 License
 
 ```
 MIT License
