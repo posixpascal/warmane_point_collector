@@ -42,10 +42,12 @@ async def main():
     if testing_mode:
         slowdown = 10
 
+    browser = await launch(
+        {'executablePath': config.chrome["path"], 'headless': headless_mode, 'slowmo': slowdown, 'timeout': 1})
+
     for account in config.accounts:
         logger.info("Using account: {}".format(account["username"]))
-        browser = await launch(
-            {'executablePath': config.chrome["path"], 'headless': headless_mode, 'slowmo': slowdown, 'timeout': 1})
+
         page = await browser.newPage()
 
         # GET /
@@ -84,8 +86,10 @@ async def main():
         while not is_solved:
             print("Waiting for captcha to be solved...")
             is_solved = await captcha.is_solved(page)
-            captcha_token = await page.evaluate('''() => document.querySelector('#g-recaptcha-response').value''');
-            await sleep(1)
+            # Get iframe url
+            recaptcha_iframe = await page.querySelector("#g-recaptcha-response")
+            captcha_token = (await (await recaptcha_iframe.asElement().getProperty("value")).jsonValue())
+            captcha_token = captcha_token
 
         logger.info("Captcha was solved.")
 
@@ -114,16 +118,16 @@ async def main():
             "captcha": captcha_token
         }))
 
-        await sleep(5)
         logger.info("Logged in") # we're in. :)
 
         await page.goto(config.endpoint['collect_points_url'])
+        await page.waitForSelector(config.selectors["collect_points_btn"])
 
         logger.info("Getting points")
         await page.click(config.selectors["collect_points_btn"])
-        await sleep(4)
 
         logger.info("Done.")
+        await page.close()
         # collect the points through API
         # POST /account/
         #request = requests.post(config.endpoint["collect_points_url"], data={"collectpoints": True}).json()

@@ -34,7 +34,7 @@ class Captcha(object):
         while True:
 
             # 15s is recommended by docs: https://2captcha.com/2captcha-api#solving_recaptchav2_new
-            await sleep(15)
+            await sleep(5)
 
             # check if captcha has been solved
             res = requests.get(solver_url)
