@@ -1,10 +1,4 @@
-# built-ins
-import asyncio
-
-# vendors
-from asyncio import sleep
 from urllib.parse import urlparse, parse_qs
-
 from pyppeteer import launch
 
 from warmane_point_collector.captcha import captcha
@@ -12,6 +6,7 @@ from warmane_point_collector.config import config
 from warmane_point_collector.logger import logger
 
 
+# Taken from https://github.com/miyakogi/pyppeteer/pull/160
 def patch_pyppeteer():
     import pyppeteer.connection
     original_method = pyppeteer.connection.websockets.client.connect
@@ -32,11 +27,10 @@ async def main():
 
     headless_mode = config.chrome['headless'] == '1'
     testing_mode = config.chrome['testing'] == '1'
-
-    logger.info("Starting warmane bot")
+    use_2captcha = config.bot["use_2captcha"] == '1'
 
     if headless_mode:
-        logger.info("In headless mode")
+        logger.info("Starting warmane in headless mode")
 
     slowdown = 0
     if testing_mode:
@@ -47,7 +41,6 @@ async def main():
 
     for account in config.accounts:
         logger.info("Using account: {}".format(account["username"]))
-
         page = await browser.newPage()
 
         # GET /
@@ -65,7 +58,6 @@ async def main():
 
         # Captcha hustle
         logger.info("Solving recaptcha...")
-        use_2captcha = config.bot["use_2captcha"] == '1'
 
         is_solved = False
         captcha_token = ""
@@ -86,13 +78,14 @@ async def main():
         while not is_solved:
             print("Waiting for captcha to be solved...")
             is_solved = await captcha.is_solved(page)
-            # Get iframe url
+            # Grab recaptcha token from textfield
             recaptcha_iframe = await page.querySelector("#g-recaptcha-response")
             captcha_token = (await (await recaptcha_iframe.asElement().getProperty("value")).jsonValue())
             captcha_token = captcha_token
 
         logger.info("Captcha was solved.")
 
+        # Login hustle
         logger.info("Logging in...")
         # perform login in JS as recaptcha would detect it otherwise
         # this uses jQuery as it's already loaded on warmane and comes in handy
@@ -118,20 +111,13 @@ async def main():
             "captcha": captcha_token
         }))
 
-        logger.info("Logged in") # we're in. :)
+        logger.info("Logged in")
 
+        # Collect points
         await page.goto(config.endpoint['collect_points_url'])
         await page.waitForSelector(config.selectors["collect_points_btn"])
 
         logger.info("Getting points")
         await page.click(config.selectors["collect_points_btn"])
 
-        logger.info("Done.")
         await page.close()
-        # collect the points through API
-        # POST /account/
-        #request = requests.post(config.endpoint["collect_points_url"], data={"collectpoints": True}).json()
-        #if "messages" in request and "error" in request["messages"]:
-        #    logger.error(";".join(request["messages"]["error"]))
-
-

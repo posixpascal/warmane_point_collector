@@ -3,6 +3,8 @@
 A python3 bot which collects daily login points from [warmane.com](https://www.warmane.com). It supports multiple
 accounts, can run chrome in headless mode and solve recaptchas automatically in the background.
 
+Please make sure that you've signed into the game at least once the day you're running this.
+ 
 ## 💻 Install
 
 Install using docker or [Pipenv](https://docs.pipenv.org/en/latest/)

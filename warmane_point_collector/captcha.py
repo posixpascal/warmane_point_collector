@@ -23,11 +23,11 @@ class Captcha(object):
         }
         logger.info(config.twocaptcha["api_key"])
 
-        r = requests.post(config.twocaptcha["request_url"], data = form_data)
+        # create ticket
+        r = requests.post(config.twocaptcha["request_url"], data=form_data)
         request_id = r.json()['request']
         solver_url = config.twocaptcha["solver_url"].format(req_id=request_id)
 
-        # TODO: use counter to force a retry someday in the future. e.g. counter > 10 => retry next captcha
         recaptcha_counter = 0
 
         # wait for a human to solve that captcha
@@ -39,6 +39,8 @@ class Captcha(object):
             # check if captcha has been solved
             res = requests.get(solver_url)
             json_response = res.json()
+
+            # check for successful recaptcha token
             if json_response["status"] == 1:
                 recaptcha_token = json_response["request"]
                 logger.debug(recaptcha_token)
@@ -52,24 +54,12 @@ class Captcha(object):
             if recaptcha_counter > 5:
                 logger.info("Still no captcha response...")
 
-
-    def solve_manually(self):
-        pass
-
     # Checks whether or not the captcha has been solved on the page
     async def is_solved(self, page):
-        try:
-            textarea = await page.querySelector('#g-recaptcha-response')
-            textarea = textarea.asElement()
-            textarea_value = await textarea.getProperty("value")
-            captcha_key = await textarea_value.jsonValue()
-        except:
-            # sometimes pyppeteer crashes, not sure why as of now.
-            # todo: somehow we loose page context (due to asyncio maybe)
-            # the captcha cant be detected as solved at this point,
-            # maybe fallback to a JS solution?
-            # todo: maybe already solved due to patch_pyppeteer in main.py.
-            return False
+        textarea = await page.querySelector('#g-recaptcha-response')
+        textarea = textarea.asElement()
+        textarea_value = await textarea.getProperty("value")
+        captcha_key = await textarea_value.jsonValue()
 
         return len(captcha_key) > 0
 
