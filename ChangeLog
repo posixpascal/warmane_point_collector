@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+v1.0.0
+------
+
+* 🐛 removes dead code and updates readme
+* 📝 fixes bug in captcha module
+* 📝 updates readme and dockerfile
 * 🤓 adds readme, changelog and author files
 * 🐍 adds warmane\_point\_collector package
 * 🐳 adds Dockerfile
