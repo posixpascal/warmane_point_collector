@@ -1,11 +1,11 @@
--i https://pypi.org/simple
-appdirs==1.4.3
-certifi==2019.6.16
+-i https://pypi.org/simple/
+appdirs==1.4.4
+certifi==2020.12.5
 chardet==3.0.4
 idna==2.8
-pyee==6.0.0
+pyee==8.1.0
 pyppeteer==0.0.25
 requests==2.22.0
-tqdm==4.32.2
-urllib3==1.25.3
-websockets==8.0
+tqdm==4.60.0
+urllib3==1.25.8
+websockets==8.1
